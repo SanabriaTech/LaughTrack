@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4A3445D12E46B60F00B175EA /* Untitled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3445D02E46B5FF00B175EA /* Untitled.swift */; };
+		4A3445D42E46B67E00B175EA /* LaughTrack.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4A3445D22E46B67E00B175EA /* LaughTrack.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4A3445B42E46B33000B175EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,9 @@
 		4A3445A62E46B32F00B175EA /* LaughTrackNew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LaughTrackNew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A3445B32E46B32F00B175EA /* LaughTrackNewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaughTrackNewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A3445BD2E46B33000B175EA /* LaughTrackNewUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LaughTrackNewUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A3445D02E46B5FF00B175EA /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
+		4A3445D32E46B67E00B175EA /* LaughTrack.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LaughTrack.xcdatamodel; sourceTree = "<group>"; };
+		4A3445D62E46BB2000B175EA /* LaughTrack.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LaughTrack.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +83,9 @@
 		4A34459D2E46B32F00B175EA = {
 			isa = PBXGroup;
 			children = (
+				4A3445D52E46BB2000B175EA /* LaughTrack.xcdatamodeld */,
+				4A3445D22E46B67E00B175EA /* LaughTrack.xcdatamodeld */,
+				4A3445D02E46B5FF00B175EA /* Untitled.swift */,
 				4A3445A82E46B32F00B175EA /* LaughTrackNew */,
 				4A3445B62E46B33000B175EA /* LaughTrackNewTests */,
 				4A3445C02E46B33000B175EA /* LaughTrackNewUITests */,
@@ -171,7 +182,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					4A3445A52E46B32F00B175EA = {
 						CreatedOnToolsVersion = 16.4;
@@ -236,6 +247,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A3445D12E46B60F00B175EA /* Untitled.swift in Sources */,
+				4A3445D42E46B67E00B175EA /* LaughTrack.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +340,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -383,6 +397,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -550,6 +565,29 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4A3445D22E46B67E00B175EA /* LaughTrack.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4A3445D32E46B67E00B175EA /* LaughTrack.xcdatamodel */,
+			);
+			currentVersion = 4A3445D32E46B67E00B175EA /* LaughTrack.xcdatamodel */;
+			path = LaughTrack.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		4A3445D52E46BB2000B175EA /* LaughTrack.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4A3445D62E46BB2000B175EA /* LaughTrack.xcdatamodel */,
+			);
+			currentVersion = 4A3445D62E46BB2000B175EA /* LaughTrack.xcdatamodel */;
+			path = LaughTrack.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 4A34459E2E46B32F00B175EA /* Project object */;
 }

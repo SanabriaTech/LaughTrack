@@ -718,6 +718,7 @@ struct ComedianDetailView: View {
     @State private var userRating = 5
     @State private var userComment = ""
     @State private var showingVideos = false
+    @State private var featuredVideo: ComedianVideo?
     
     private var gradientColors: [Color] {
         switch comedian.comedyStyle?.lowercased() ?? "" {
@@ -829,6 +830,100 @@ struct ComedianDetailView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 24)
+                    // Featured Video Section
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Featured Video")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                        
+                        if let video = featuredVideo {
+                            VStack(spacing: 0) {
+                                Button(action: { showingVideos = true }) {
+                                    ZStack {
+                                        AsyncImage(url: URL(string: video.thumbnailURL)) { image in
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(height: 220)
+                                                .clipped()
+                                        } placeholder: {
+                                            Rectangle()
+                                                .fill(Color(.systemGray5))
+                                                .frame(height: 220)
+                                                .overlay(
+                                                    Image(systemName: "video")
+                                                        .font(.system(size: 40))
+                                                        .foregroundColor(.secondary)
+                                                )
+                                        }
+                                        
+                                        Circle()
+                                            .fill(Color.black.opacity(0.7))
+                                            .frame(width: 60, height: 60)
+                                            .overlay(
+                                                Image(systemName: "play.fill")
+                                                    .foregroundColor(.white)
+                                                    .font(.system(size: 24))
+                                                    .offset(x: 2)
+                                            )
+                                    }
+                                    .frame(height: 220)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(video.title)
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(.white)
+                                    
+                                    HStack {
+                                        VideoPlatformBadge(type: video.videoType)
+                                        Spacer()
+                                        Text(video.uploadDate, style: .relative)
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                .padding(12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+                        } else {
+                            VStack(spacing: 12) {
+                                Image(systemName: "video.slash")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.secondary)
+                                
+                                Text("No videos yet")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 180)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
+
+                    // Social Media Section
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Connect")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                        
+                        HStack(spacing: 16) {
+                            SocialMediaButton(platform: "Instagram", icon: "camera.circle.fill", color: .purple)
+                            SocialMediaButton(platform: "TikTok", icon: "music.note.circle.fill", color: .pink)
+                            SocialMediaButton(platform: "YouTube", icon: "play.circle.fill", color: .red)
+                            SocialMediaButton(platform: "Twitter", icon: "bird.circle.fill", color: .blue)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
                     
                     // Action Buttons
                     VStack(spacing: 16) {
@@ -837,7 +932,7 @@ struct ComedianDetailView: View {
                                 Image(systemName: "play.rectangle.fill")
                                     .font(.system(size: 16))
                                 
-                                Text("🎬 View Videos")
+                                Text("🎬 View More")
                                     .font(.system(size: 16, weight: .bold))
                             }
                             .foregroundColor(.black)
@@ -917,6 +1012,9 @@ struct ComedianDetailView: View {
                 comedianName: comedian.name ?? "Comedian"
             )
         }
+        .onAppear {
+            loadFeaturedVideo()
+        }
     }
     
     private var sampleReviews: [SampleReview] {
@@ -941,7 +1039,19 @@ struct ComedianDetailView: View {
             print("Error saving review: \(error)")
         }
     }
-}
+    private func loadFeaturedVideo() {
+        featuredVideo = ComedianVideo(
+            comedianId: comedian.name ?? "",
+            title: "Office Life Observations",
+            description: "My take on working from home",
+            duration: 120,
+            thumbnailURL: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=300&h=200&fit=crop",
+            playbackURL: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            videoType: .nativeUpload,
+            uploadDate: Date().addingTimeInterval(-86400),
+            isPublic: true
+        )
+    }}
 // MARK: - Search View
 struct SearchView: View {
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Comedian.name, ascending: true)])
@@ -2302,7 +2412,33 @@ struct SimpleWebVideoPlayer: UIViewRepresentable {
         return url
     }
 }
-
+// MARK: - Social Media Button
+struct SocialMediaButton: View {
+    let platform: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        Button(action: {
+            print("Tapped \(platform)")
+        }) {
+            VStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.system(size: 32))
+                    .foregroundColor(color)
+                
+                Text(platform)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
 #Preview {
     ContentView()
 }

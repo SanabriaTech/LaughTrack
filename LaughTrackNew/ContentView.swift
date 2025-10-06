@@ -1854,7 +1854,7 @@ struct ComedianVideoListView: View {
     @State private var videos: [ComedianVideo] = []
     @State private var showingAddVideo = false
     @State private var selectedVideo: ComedianVideo?
-    
+    @Environment(\.dismiss) private var dismiss
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
@@ -1880,6 +1880,13 @@ struct ComedianVideoListView: View {
             .navigationTitle("\(comedianName)'s Videos")
             .background(Color.black)
             .preferredColorScheme(.dark)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
         }
         .sheet(isPresented: $showingAddVideo) {
             SimpleAddVideoView(

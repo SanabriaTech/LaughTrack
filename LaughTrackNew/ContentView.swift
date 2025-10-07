@@ -1598,11 +1598,15 @@ struct EventCard: View {
 
 // MARK: - Profile View
 struct ProfileView: View {
-    @State private var favoriteCount = 12
+    
     @State private var showsAttended = 8
     @State private var reviewsWritten = 25
     @State private var notificationsEnabled = true
-    
+    @StateObject private var followService: FollowService
+
+    init() {
+        _followService = StateObject(wrappedValue: FollowService(viewContext: PersistenceController.shared.container.viewContext))
+    }
     var body: some View {
         NavigationView {
             ScrollView {
@@ -1646,7 +1650,7 @@ struct ProfileView: View {
                     .padding(.top, 20)
                     
                     HStack(spacing: 16) {
-                        ProfileStat(number: "\(favoriteCount)", label: "Favorites", color: .orange)
+                        ProfileStat(number: "\(followService.followedComedianNames.count)", label: "Following", color: .orange)
                         ProfileStat(number: "\(showsAttended)", label: "Shows Attended", color: .blue)
                         ProfileStat(number: "\(reviewsWritten)", label: "Reviews", color: .purple)
                     }

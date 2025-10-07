@@ -270,7 +270,7 @@ struct HomeView: View {
     private var comedians: FetchedResults<Comedian>
     
     @StateObject private var followService: FollowService
-    
+    @State private var showingFollowingList = false
     init() {
         _followService = StateObject(wrappedValue: FollowService(viewContext: PersistenceController.shared.container.viewContext))
     }
@@ -282,7 +282,8 @@ struct HomeView: View {
                     // Hero Section
                     HeroSection(
                         comedianCount: comedians.count,
-                        followingCount: followService.followedComedianNames.count
+                        followingCount: followService.followedComedianNames.count,
+                        onFollowingTapped: { showingFollowingList = true }
                     )
                     
                     VStack(spacing: 32) {
@@ -303,6 +304,12 @@ struct HomeView: View {
             }
             .background(Color.black)
             .navigationBarHidden(true)
+            .sheet(isPresented: $showingFollowingList) {
+                FollowingListView(
+                    followedComedians: comedians.filter { followService.isFollowing($0.name ?? "") },
+                    followService: followService
+                )
+            }
         }
     }
 }
@@ -311,6 +318,7 @@ struct HomeView: View {
 struct HeroSection: View {
     let comedianCount: Int
     let followingCount: Int
+    let onFollowingTapped: () -> Void
     
     var body: some View {
         VStack(spacing: 24) {
@@ -351,7 +359,22 @@ struct HeroSection: View {
             HStack(spacing: 12) {
                 StatsCard(number: "\(comedianCount)", label: "Comedians", color: .orange)
                 StatsCard(number: "12", label: "Shows Today", color: .blue)
-                StatsCard(number: "\(followingCount)", label: "Following", color: .pink)
+                Button(action: onFollowingTapped) {
+                    VStack(spacing: 8) {
+                        Text("\(followingCount)")
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .foregroundColor(.pink)
+                        
+                        Text("Following")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .buttonStyle(PlainButtonStyle())
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
@@ -2444,6 +2467,65 @@ struct SocialMediaButton: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(PlainButtonStyle())
+    }
+}
+// MARK: - Following List View
+struct FollowingListView: View {
+    let followedComedians: [Comedian]
+    @ObservedObject var followService: FollowService
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                if followedComedians.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "heart.slash")
+                            .font(.system(size: 50))
+                            .foregroundColor(.secondary)
+                        
+                        Text("Not following anyone yet")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundColor(.white)
+                        
+                        Text("Follow comedians to see them here")
+                            .font(.system(size: 16))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 100)
+                } else {
+                    LazyVStack(spacing: 16) {
+                        ForEach(Array(followedComedians.enumerated()), id: \.element) { index, comedian in
+                            NavigationLink(destination: ComedianDetailView(comedian: comedian, photoIndex: index, followService: followService)) {
+                                ComedianRowCard(
+                                    comedian: comedian,
+                                    photoIndex: index,
+                                    isFollowed: true
+                                ) {
+                                    followService.toggleFollow(comedian.name ?? "")
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 20)
+                }
+            }
+            .background(Color.black)
+            .navigationTitle("Following")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .foregroundColor(.orange)
+                }
+            }
+        }
+        .preferredColorScheme(.dark)
     }
 }
 #Preview {

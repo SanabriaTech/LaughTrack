@@ -1603,6 +1603,11 @@ struct ProfileView: View {
     @State private var reviewsWritten = 25
     @State private var notificationsEnabled = true
     @StateObject private var followService: FollowService
+    @State private var showingFollowingList = false
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Comedian.name, ascending: true)],
+        animation: .default)
+    private var comedians: FetchedResults<Comedian>
 
     init() {
         _followService = StateObject(wrappedValue: FollowService(viewContext: PersistenceController.shared.container.viewContext))
@@ -1650,7 +1655,12 @@ struct ProfileView: View {
                     .padding(.top, 20)
                     
                     HStack(spacing: 16) {
-                        ProfileStat(number: "\(followService.followedComedianNames.count)", label: "Following", color: .orange)
+                        Button(action: { showingFollowingList = true }) {
+                            ProfileStat(number: "\(followService.followedComedianNames.count)",
+                                        label: "Following", color: .orange)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
                         ProfileStat(number: "\(showsAttended)", label: "Shows Attended", color: .blue)
                         ProfileStat(number: "\(reviewsWritten)", label: "Reviews", color: .purple)
                     }
@@ -1696,6 +1706,12 @@ struct ProfileView: View {
             }
             .background(Color.black)
             .navigationBarHidden(true)
+            .sheet(isPresented: $showingFollowingList) {
+                FollowingListView(
+                    followedComedians: comedians.filter { followService.isFollowing($0.name ?? "") },
+                    followService: followService
+                )
+            }
         }
     }
 }
